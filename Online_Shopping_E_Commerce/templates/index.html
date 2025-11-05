@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .fade-in { animation: fadeIn 0.5s ease-in; }
+    .slide-in { animation: slideIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white py-16 fade-in">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 slide-in">Welcome to Ocean Market</h1>
+        <p class="text-xl opacity-90 mb-8 slide-in">Discover a world of quality products at your fingertips</p>
+        <div class="flex flex-wrap gap-4">
+            <a href="{{ url_for('home') }}" 
+               class="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-all transform hover:scale-105">
+                Shop Now
+            </a>
+            <a href="{{ url_for('products') }}" 
+               class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-all transform hover:scale-105">
+                View Categories
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section id="categories" class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-8">Shop by Category</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for category in ['Electronics', 'Fashion', 'Home & Living'] %}
+            <div class="bg-blue-50 rounded-lg p-6 hover:shadow-lg transition-all transform hover:-translate-y-1">
+                <h3 class="text-xl font-medium text-blue-800 mb-2">{{ category }}</h3>
+                <p class="text-blue-600 mb-4">Explore {{ category }}</p>
+                <a href="#" class="text-blue-700 hover:text-blue-900">Browse →</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-8">Featured Products</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {% for i in range(4) %}
+            <div class="bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all">
+                <div class="h-48 bg-blue-100"></div>
+                <div class="p-4">
+                    <h3 class="font-medium text-gray-800">Product Name</h3>
+                    <p class="text-blue-600 font-medium mt-2">{{ 9999|kes }}</p>
+                    <button class="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="bg-blue-600 text-white py-12">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-2xl font-semibold mb-4">Stay Updated</h2>
+        <p class="mb-6">Subscribe to our newsletter for exclusive offers and updates</p>
+        <form class="max-w-md mx-auto flex gap-2">
+            <input type="email" 
+                   placeholder="Enter your email" 
+                   class="flex-1 px-4 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <button type="submit" 
+                    class="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors">
+                Subscribe
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Add animation classes when elements enter viewport
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+            }
+        });
+    });
+
+    document.querySelectorAll('section').forEach((section) => {
+        observer.observe(section);
+    });
+});
+</script>
+{% endblock %}

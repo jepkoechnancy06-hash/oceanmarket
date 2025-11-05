@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="py-8">
+  <div class="container mx-auto px-4">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Your Cart</h1>
+
+    {% if not items %}
+      <p class="text-gray-600">Your cart is empty.</p>
+      <a href="{{ url_for('products') }}" class="inline-block mt-4 text-blue-600 hover:text-blue-800">Continue shopping</a>
+    {% else %}
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-4">
+          {% for row in items %}
+          <div class="bg-white border rounded-lg p-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-20 h-20 bg-gray-100 rounded"></div>
+              <div>
+                <div class="font-medium text-gray-800">{{ row.product.name }}</div>
+                <div class="text-sm text-gray-500">{{ row.product.price|kes }}</div>
+              </div>
+            </div>
+            <form method="post" action="{{ url_for('cart_update') }}" class="flex items-center gap-2">
+              <input type="hidden" name="pid" value="{{ row.product.id }}">
+              <input name="qty" type="number" min="0" value="{{ row.qty }}" class="w-20 px-2 py-1 border rounded">
+              <button class="px-3 py-1 border rounded">Update</button>
+            </form>
+            <div class="text-right">
+              <div class="text-gray-600">Line Total</div>
+              <div class="font-semibold text-blue-600">{{ row.line_total|kes }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div>
+          <div class="bg-white border rounded-lg p-4">
+            <h2 class="font-semibold mb-3">Summary</h2>
+            <div class="flex justify-between text-gray-700">
+              <span>Subtotal</span>
+              <span>{{ subtotal|kes }}</span>
+            </div>
+            <a href="{{ url_for('checkout') }}" class="block mt-4 w-full text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Proceed to Checkout</a>
+            <a href="{{ url_for('products') }}" class="block mt-2 w-full text-center border px-4 py-2 rounded">Continue Shopping</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name if product else '' }}",
+  "category": "{{ product.category if product else '' }}",
+  "description": "{{ product.desc if product else '' }}",
+  "url": "{{ (SITE_URL.rstrip('/') if SITE_URL else request.url_root.rstrip('/')) + request.path }}",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "KES",
+    "price": "{{ '%.0f'|format(product.price) if product else '' }}",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ '%.1f'|format(product.rating) if product else '' }}",
+    "reviewCount": "12"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ (SITE_URL.rstrip('/') if SITE_URL else request.url_root.rstrip('/')) }}/"},
+    {"@type": "ListItem", "position": 2, "name": "Products", "item": "{{ (SITE_URL.rstrip('/') if SITE_URL else request.url_root.rstrip('/')) }}/products"},
+    {"@type": "ListItem", "position": 3, "name": "{{ product.name if product else '' }}", "item": "{{ (SITE_URL.rstrip('/') if SITE_URL else request.url_root.rstrip('/')) + request.path }}"}
+  ]
+}
+</script>
+{% if GA4_ID and product %}
+<script>
+  (function(){
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} gtag('js', new Date());
+    var item = {{ {'item_id': product.id, 'item_name': product.name, 'item_category': product.category, 'price': product.price}|tojson }};
+    gtag('event', 'view_item', { currency: 'KES', value: item.price, items: [item] });
+  })();
+  {% if META_PIXEL_ID %}
+  if (window.fbq) { fbq('track', 'ViewContent'); }
+  {% endif %}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="py-8">
+  <div class="container mx-auto px-4">
+    {% if not product %}
+      <h1 class="text-2xl font-semibold text-gray-800 mb-6">Product Not Found</h1>
+      <p class="text-gray-600">The product you are looking for doesn't exist.</p>
+      <a href="{{ url_for('products') }}" class="inline-block mt-4 text-blue-600 hover:text-blue-800">Back to Products</a>
+    {% else %}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Gallery -->
+        <div>
+          <div class="aspect-[4/3] bg-gray-100 rounded-lg"></div>
+          <div class="mt-3 grid grid-cols-4 gap-2">
+            <div class="h-20 bg-gray-100 rounded"></div>
+            <div class="h-20 bg-gray-100 rounded"></div>
+            <div class="h-20 bg-gray-100 rounded"></div>
+            <div class="h-20 bg-gray-100 rounded"></div>
+          </div>
+        </div>
+        <!-- Info -->
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-800">{{ product.name }}</h1>
+          <div class="mt-2 text-sm text-gray-500">Category: {{ product.category }}</div>
+          <div class="mt-1 text-sm text-gray-500">⭐ {{ '%.1f'|format(product.rating) }} / 5</div>
+          <div class="mt-4 text-3xl font-bold text-blue-600">{{ product.price|kes }}</div>
+          <p class="mt-4 text-gray-700">{{ product.desc }}</p>
+
+          <div class="mt-6 flex gap-3">
+            <a href="{{ url_for('cart_add', pid=product.id) }}" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">Add to Cart</a>
+            <a href="https://wa.me/254700000000?text={{ ('Hello, I have a question about ' ~ product.name)|urlencode }}" target="_blank" class="px-5 py-2 rounded-lg border">Ask on WhatsApp</a>
+          </div>
+
+          <div class="mt-6">
+            <h2 class="font-medium text-gray-800 mb-2">Delivery & Payment</h2>
+            <ul class="text-gray-600 list-disc list-inside space-y-1">
+              <li>Same-day delivery in Nairobi (order before 2pm)</li>
+              <li>Nationwide courier delivery available</li>
+              <li>Pay with M-Pesa at checkout</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related -->
+      {% if related %}
+      <div class="mt-12">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Related Products</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {% for p in related %}
+          <a href="{{ url_for('product_detail', pid=p.id) }}" class="group bg-white rounded-lg overflow-hidden border hover:shadow-md transition">
+            <div class="h-40 bg-gray-100"></div>
+            <div class="p-4">
+              <div class="text-gray-800 font-medium group-hover:text-blue-700">{{ p.name }}</div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="text-blue-600 font-semibold">{{ p.price|kes }}</div>
+                <div class="text-sm text-gray-500">⭐ {{ '%.1f'|format(p.rating) }}</div>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

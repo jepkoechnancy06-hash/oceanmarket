@@ -1,0 +1,11 @@
+{
+  "name": "Ocean Market",
+  "short_name": "Ocean",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "scope": "/",
+  "description": "Kenya online shopping: Same-day Nairobi delivery, pay with M-Pesa.",
+  "icons": []
+}

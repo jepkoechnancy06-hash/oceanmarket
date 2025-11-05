@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="py-8">
+  <div class="container mx-auto px-4 prose max-w-none">
+    <h1>Returns Policy</h1>
+    <p>If you are not satisfied with your purchase, you can return most items within 7 days of delivery.</p>
+    <h2>Eligibility</h2>
+    <ul>
+      <li>Item must be unused and in original packaging</li>
+      <li>Proof of purchase required</li>
+      <li>Excludes perishable or hygiene-sensitive items</li>
+    </ul>
+    <h2>Process</h2>
+    <ol>
+      <li>Contact support via the Contact page with your order number</li>
+      <li>Receive return instructions and drop-off/pickup details</li>
+      <li>Refund or exchange processed after inspection</li>
+    </ol>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How long do I have to return an item?",
+      "acceptedAnswer": {"@type": "Answer", "text": "You can return most items within 7 days of delivery as long as they are unused and in original packaging."}
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer same-day delivery?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Yes, same-day delivery is available within Nairobi for qualifying orders placed before 2pm."}
+    },
+    {
+      "@type": "Question",
+      "name": "What payment methods are accepted?",
+      "acceptedAnswer": {"@type": "Answer", "text": "You can pay with M-Pesa at checkout. Cash on Delivery is also available in selected areas."}
+    }
+  ]
+}
+</script>
+{% endblock %}
